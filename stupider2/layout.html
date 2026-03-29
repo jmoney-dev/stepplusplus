@@ -112,7 +112,8 @@
             color: #ffffff;
             line-height: 1;
             font-variant-numeric: tabular-nums;
-            text-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+            text-shadow: 0 12px 34px rgba(0, 0, 0, 0.62);
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.5));
             background: transparent;
             border: 0;
             padding: 0;
@@ -143,11 +144,17 @@
             white-space: nowrap;
         }
 
-        .pokego-tab {
+        .top-tabs {
             position: fixed;
             right: 14px;
             top: 10px;
+            display: flex;
+            gap: 8px;
             z-index: 200;
+        }
+
+        .pokego-tab,
+        .historymap-tab {
             padding: 10px 14px;
             border: 3px solid #000;
             background: linear-gradient(135deg, #00d2ff, #3a7bd5);
@@ -158,6 +165,45 @@
             text-shadow: 1px 1px 0 #000;
             cursor: pointer;
             transform: rotate(-2deg);
+        }
+
+        .historymap-tab {
+            background: linear-gradient(135deg, #22c55e, #15803d);
+            transform: rotate(1deg);
+        }
+
+        .strava-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .strava-mark {
+            position: relative;
+            width: 14px;
+            height: 16px;
+            display: inline-block;
+        }
+
+        .strava-mark::before,
+        .strava-mark::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+        }
+
+        .strava-mark::before {
+            top: 0;
+            border-bottom: 10px solid #fc4c02;
+        }
+
+        .strava-mark::after {
+            top: 8px;
+            border-bottom: 8px solid #f97316;
         }
 
         .pokego-overlay {
@@ -173,6 +219,172 @@
 
         .pokego-overlay.open {
             display: flex;
+        }
+
+        .historymap-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 840;
+            display: none;
+            background: rgba(0, 0, 0, 0.75);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .historymap-overlay.open {
+            display: flex;
+        }
+
+        .historymap-card {
+            width: min(94vw, 920px);
+            border: 4px solid #fff;
+            background: linear-gradient(160deg, #0f172a 0%, #111827 100%);
+            color: #e5e7eb;
+            padding: 14px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            max-height: 92vh;
+            overflow: auto;
+        }
+
+        .historymap-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .historymap-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: #86efac;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .historymap-close {
+            padding: 6px 10px;
+            border: 2px solid #fff;
+            background: #ef4444;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .historymap-view {
+            position: relative;
+            width: 100%;
+            height: min(60vh, 500px);
+            border: 2px solid #9ca3af;
+            background:
+                radial-gradient(circle at 22% 32%, rgba(34, 197, 94, 0.25), transparent 20%),
+                radial-gradient(circle at 74% 66%, rgba(22, 163, 74, 0.21), transparent 18%),
+                repeating-linear-gradient(30deg, rgba(203, 213, 225, 0.35) 0, rgba(203, 213, 225, 0.35) 4px, transparent 4px, transparent 60px),
+                repeating-linear-gradient(-20deg, rgba(226, 232, 240, 0.35) 0, rgba(226, 232, 240, 0.35) 3px, transparent 3px, transparent 56px),
+                #eef2f7;
+            overflow: hidden;
+        }
+
+        .historymap-view.loading::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(147, 197, 253, 0.48) 50%, rgba(255, 255, 255, 0) 100%);
+            animation: mapScan 1.2s linear infinite;
+            pointer-events: none;
+        }
+
+        .historymap-loading {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 23, 42, 0.85);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.65);
+            padding: 12px 14px;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .history-point {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #fff;
+            background: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.75);
+        }
+
+        .history-point.latest {
+            width: 18px;
+            height: 18px;
+            background: #f43f5e;
+            box-shadow: 0 0 14px rgba(244, 63, 94, 0.85);
+        }
+
+        .history-point-label {
+            position: absolute;
+            transform: translate(-50%, -145%);
+            font-size: 10px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 4px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            white-space: nowrap;
+        }
+
+        .historymap-empty {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #d1fae5;
+            font-size: 18px;
+            padding: 16px;
+        }
+
+        .historymap-foot {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+
+        .strava-actions {
+            margin-top: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .strava-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 13px;
+            max-height: 28vh;
+            overflow: auto;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        @keyframes mapScan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .pokego-card {
@@ -226,21 +438,74 @@
             position: absolute;
             left: 45%;
             top: 45%;
-            width: 72px;
-            height: 72px;
-            border: 3px solid #fff;
-            border-radius: 50%;
-            background: radial-gradient(circle at 50% 28%, #fef08a 0, #fde047 58%, #d97706 100%);
-            color: #111;
+            width: 92px;
+            height: 92px;
+            border: 2px solid #fff;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #1f2937 0%, #0f172a 100%);
+            color: #fff;
             font-size: 11px;
             font-weight: 900;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            cursor: pointer;
             user-select: none;
-            box-shadow: 0 0 16px rgba(250, 204, 21, 0.8);
+            box-shadow: 0 0 16px rgba(96, 165, 250, 0.7);
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .pokego-sprite {
+            font-size: 38px;
+            line-height: 1;
+            margin-bottom: 4px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        .pokego-name {
+            font-size: 10px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #fde68a;
+        }
+
+        .pokeball {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #111;
+            background: linear-gradient(to bottom, #ef4444 0 48%, #111 48% 52%, #f8fafc 52% 100%);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+        }
+
+        .pokeball::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1px solid #111;
+            background: #fff;
+            transform: translate(-50%, -50%);
+        }
+
+        .pokeball.throwing {
+            opacity: 1;
+            transition: left 0.45s ease-out, top 0.45s ease-out, transform 0.45s ease-out;
+        }
+
+        .pokeball.hidden {
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
 
         .pokego-foot {
@@ -258,7 +523,8 @@
             font-weight: 600;
             letter-spacing: 2px;
             text-transform: uppercase;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+            text-shadow: 0 6px 12px rgba(0, 0, 0, 0.55);
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
             background: rgba(15, 23, 42, 0.76);
             border: 1px solid rgba(148, 163, 184, 0.5);
             padding: 8px 14px;
@@ -464,6 +730,80 @@
             pointer-events: none;
             z-index: 1;
             overflow: hidden;
+        }
+
+        .meme-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 25;
+            overflow: hidden;
+        }
+
+        .meme-sticker {
+            position: absolute;
+            border: 3px solid #000;
+            box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(1px);
+        }
+
+        .nyan-main {
+            left: 4vw;
+            bottom: 22vh;
+            width: min(36vw, 300px);
+            transform: rotate(-6deg);
+            animation: memeFloatA 3.1s ease-in-out infinite;
+        }
+
+        .nyan-top {
+            right: 14vw;
+            top: 14vh;
+            width: min(30vw, 250px);
+            transform: rotate(7deg);
+            animation: memeFloatB 2.7s ease-in-out infinite;
+        }
+
+        .knuckles-badge {
+            left: 56vw;
+            bottom: 18vh;
+            transform: rotate(-4deg);
+            background: linear-gradient(140deg, #dc2626 0%, #7f1d1d 100%);
+            color: #fff;
+            padding: 12px 14px;
+            font-weight: 900;
+            font-size: 18px;
+            text-shadow: 2px 2px 0 #000;
+            letter-spacing: 1px;
+            animation: memeFloatC 2.9s ease-in-out infinite;
+        }
+
+        .meme-caption {
+            right: 8vw;
+            bottom: 28vh;
+            transform: rotate(5deg);
+            background: #fff200;
+            color: #111;
+            padding: 8px 10px;
+            font-weight: 900;
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+            animation: memeFloatA 2.5s ease-in-out infinite;
+        }
+
+        @keyframes memeFloatA {
+            0%, 100% { transform: translateY(0) rotate(-4deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        @keyframes memeFloatB {
+            0%, 100% { transform: translateY(0) rotate(7deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        @keyframes memeFloatC {
+            0%, 100% { transform: translateY(0) rotate(-4deg); }
+            50% { transform: translateY(-8px) rotate(-9deg); }
         }
 
         .chaos-gif {
@@ -781,6 +1121,7 @@
             border: 7px ridge #00a1ff;
             padding: 12px;
             transform: rotate(-4deg);
+            display: none;
         }
 
         .location-panel h2 {
@@ -927,11 +1268,43 @@
                 width: min(90vw, 270px);
             }
 
+            .nyan-main {
+                width: min(52vw, 220px);
+                left: 4vw;
+                bottom: 24vh;
+            }
+
+            .nyan-top {
+                width: min(45vw, 190px);
+                right: 4vw;
+                top: 22vh;
+            }
+
+            .knuckles-badge {
+                left: 8vw;
+                bottom: 12vh;
+                font-size: 14px;
+            }
+
+            .meme-caption {
+                right: 6vw;
+                bottom: 16vh;
+                font-size: 12px;
+            }
+
             .pokego-tab {
-                right: 8px;
-                top: 8px;
                 font-size: 12px;
                 padding: 8px 10px;
+            }
+
+            .historymap-tab {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+
+            .top-tabs {
+                right: 8px;
+                top: 8px;
             }
         }
     </style>
@@ -940,8 +1313,8 @@
     <section class="menu-screen" id="menuScreen" aria-label="Main menu">
         <div class="menu-card">
             <div class="menu-kicker">Realtime Sandbox</div>
-            <h1 class="menu-title">PulseStep Analytics</h1>
-            <p class="menu-sub">A playful motion dashboard with voice-reactive pulse tracking, chaotic step interactions, and location distance measured in Pikachu heights.</p>
+            <h1 class="menu-title">Step++</h1>
+            <p class="menu-sub">AI-native movement intelligence for real-time cadence, pulse simulation, and location insights.</p>
             <button class="menu-start-btn" type="button" onclick="startExperience()">Launch Experience</button>
         </div>
     </section>
@@ -953,6 +1326,12 @@
     >
 
     <div class="gif-layer" id="gifLayer"></div>
+    <div class="meme-layer" aria-label="Meme stickers">
+        <img class="meme-sticker nyan-main" src="https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif" alt="Nyan Cat meme">
+        <img class="meme-sticker nyan-top" src="https://media.giphy.com/media/sIIhZliB2McAo/giphy.gif" alt="Nyan Cat meme floating">
+        <div class="meme-sticker knuckles-badge">UGANDAN KNUCKLES<br>DO U KNOW DA WAE</div>
+        <div class="meme-caption">2016 MEME PACK LOADED</div>
+    </div>
     <div class="flash" id="flash"></div>
     <div class="hit-marker" id="hitMarker" aria-hidden="true"></div>
     <div class="hit-text" id="hitText" aria-hidden="true">+100 MLG</div>
@@ -966,7 +1345,10 @@
     <div class="counter-label">Step Counter</div>
     <div class="count-display" id="count">0</div>
     <div class="step-unit">steps</div>
-    <button class="pokego-tab" type="button" onclick="openPokeGoTab()">Bootleg PokeGo</button>
+    <div class="top-tabs" aria-label="Game tabs">
+        <button class="pokego-tab" type="button" onclick="openPokeGoTab()">Bootleg PokeGo</button>
+        <button class="historymap-tab" type="button" onclick="openHistoryMapTab()"><span class="strava-logo"><span class="strava-mark"></span><span>Strava</span></span></button>
+    </div>
     <div class="step-cluster" id="stepCluster">
         <button class="plus-btn" id="plusBtn" onclick="moveAndIncrement()" aria-label="Add one step">+</button>
         <div class="step-outside">STEP</div>
@@ -979,11 +1361,35 @@
                 <button class="pokego-close" type="button" onclick="closePokeGoTab()">Close</button>
             </div>
             <div class="pokego-map" id="pokegoMap">
-                <button class="pokego-mon" id="pokegoMon" type="button" onclick="catchBootlegMon()">wild boi</button>
+                <div class="pokego-mon" id="pokegoMon" aria-label="wild bootleg monster">
+                    <div class="pokego-sprite" id="pokegoSprite">⚡</div>
+                    <div class="pokego-name" id="pokegoName">wild boi</div>
+                </div>
+                <div class="pokeball hidden" id="pokeball"></div>
             </div>
             <div class="pokego-foot">
-                <p id="pokegoStats">Catches: 0 | XP: 0</p>
-                <p>Tap the yellow orb to catch suspicious creatures.</p>
+                <p id="pokegoStats">Catches: 0 | Throws: 0 | XP: 0</p>
+                <p>Click anywhere on the map to throw a bootleg Pokeball.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="historymap-overlay" id="historyMapOverlay" aria-label="Fake location history map overlay">
+        <div class="historymap-card">
+            <div class="historymap-head">
+                <h2 class="historymap-title"><span class="strava-mark"></span><span>Strava Map</span></h2>
+                <button class="historymap-close" type="button" onclick="closeHistoryMapTab()">Close</button>
+            </div>
+            <div class="historymap-view" id="historyMapView"></div>
+            <div class="strava-actions">
+                <button class="map-control-btn" type="button" onclick="recordLocation()">Record Location</button>
+                <button class="map-control-btn" type="button" onclick="clearLocationHistory()">Clear History</button>
+            </div>
+            <p class="location-status" id="locationStatus">No location recorded yet.</p>
+            <ul class="strava-list" id="locationList"></ul>
+            <div class="historymap-foot">
+                <p id="historyMapStats">Points plotted: 0</p>
+                <p>Green dots are older points, red is the latest location.</p>
             </div>
         </div>
     </section>
@@ -1000,16 +1406,6 @@
             <button class="map-control-btn" type="button" onclick="clearBadumData()">Clear</button>
         </div>
         <p class="heart-status" id="heartStatus">Tracker idle. Waiting for badum energy.</p>
-    </section>
-
-    <section class="location-panel" aria-label="Location history panel">
-        <h2>Location History</h2>
-        <div class="location-actions">
-            <button class="map-control-btn" type="button" onclick="recordLocation()">Record Location</button>
-            <button class="map-control-btn" type="button" onclick="clearLocationHistory()">Clear History</button>
-        </div>
-        <p class="location-status" id="locationStatus">No location recorded yet.</p>
-        <ul class="location-list" id="locationList"></ul>
     </section>
 
     <section class="subway-player" aria-label="Subway Surfers video">
@@ -1048,6 +1444,10 @@
         let pokegoSpawnIntervalId = 0;
         let pokegoMoveIntervalId = 0;
         let pokegoCatches = 0;
+        let pokegoThrows = 0;
+        let pokegoCurrentMonster = null;
+        let historyMapOpen = false;
+        let historyMapLoadTimerId = 0;
         const PIKACHU_HEIGHT_METERS = 0.4;
         const badumBeatTimes = [];
         const locationHistory = [];
@@ -1084,6 +1484,13 @@
             'MOM GET THE CAMERA',
             'TRYHARD MODE'
         ];
+        const bootlegMons = [
+            { name: 'sparky rat', sprite: '⚡' },
+            { name: 'angry lizard', sprite: '🦎' },
+            { name: 'sleepy blob', sprite: '🫧' },
+            { name: 'toxic birb', sprite: '🕊️' },
+            { name: 'goop ghost', sprite: '👻' }
+        ];
 
         function startExperience() {
             const menu = document.getElementById('menuScreen');
@@ -1105,9 +1512,135 @@
             stopBootlegPokeGo();
         }
 
+        function openHistoryMapTab() {
+            const overlay = document.getElementById('historyMapOverlay');
+            overlay.classList.add('open');
+            historyMapOpen = true;
+            startFakeMapLoad();
+        }
+
+        function closeHistoryMapTab() {
+            const overlay = document.getElementById('historyMapOverlay');
+            overlay.classList.remove('open');
+            historyMapOpen = false;
+            if (historyMapLoadTimerId) {
+                clearTimeout(historyMapLoadTimerId);
+                historyMapLoadTimerId = 0;
+            }
+        }
+
+        function startFakeMapLoad() {
+            const view = document.getElementById('historyMapView');
+            const stats = document.getElementById('historyMapStats');
+            if (!view || !stats) {
+                return;
+            }
+
+            if (historyMapLoadTimerId) {
+                clearTimeout(historyMapLoadTimerId);
+                historyMapLoadTimerId = 0;
+            }
+
+            view.innerHTML = '';
+            view.classList.add('loading');
+
+            const loading = document.createElement('div');
+            loading.className = 'historymap-loading';
+            loading.textContent = 'Booting satellite grid... triangulating... loading ultra map...';
+            view.appendChild(loading);
+
+            stats.textContent = 'Map status: loading elite geodata...';
+
+            historyMapLoadTimerId = setTimeout(() => {
+                historyMapLoadTimerId = 0;
+                view.classList.remove('loading');
+                renderFakeHistoryMap();
+            }, 1800);
+        }
+
+        function renderFakeHistoryMap() {
+            const view = document.getElementById('historyMapView');
+            const stats = document.getElementById('historyMapStats');
+            if (!view || !stats) {
+                return;
+            }
+
+            view.innerHTML = '';
+            view.classList.remove('loading');
+            stats.textContent = `Points scanned: ${locationHistory.length}`;
+
+            if (!locationHistory.length) {
+                const empty = document.createElement('div');
+                empty.className = 'historymap-empty';
+                empty.textContent = 'No location history yet. Record a location first.';
+                view.appendChild(empty);
+                return;
+            }
+
+            const lats = locationHistory.map((entry) => entry.latitude);
+            const lons = locationHistory.map((entry) => entry.longitude);
+            const minLat = Math.min(...lats);
+            const maxLat = Math.max(...lats);
+            const minLon = Math.min(...lons);
+            const maxLon = Math.max(...lons);
+
+            const latRange = Math.max(0.00001, maxLat - minLat);
+            const lonRange = Math.max(0.00001, maxLon - minLon);
+
+            const oldest = locationHistory[locationHistory.length - 1];
+            const latest = locationHistory[0];
+
+            const oldestXPct = 8 + ((oldest.longitude - minLon) / lonRange) * 84;
+            const oldestYPct = 8 + ((maxLat - oldest.latitude) / latRange) * 84;
+            const latestXPct = 8 + ((latest.longitude - minLon) / lonRange) * 84;
+            const latestYPct = 8 + ((maxLat - latest.latitude) / latRange) * 84;
+
+            const line = document.createElement('div');
+            const dx = latestXPct - oldestXPct;
+            const dy = latestYPct - oldestYPct;
+            const length = Math.hypot(dx, dy);
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+            line.style.position = 'absolute';
+            line.style.left = `${oldestXPct}%`;
+            line.style.top = `${oldestYPct}%`;
+            line.style.width = `${length}%`;
+            line.style.height = '3px';
+            line.style.background = 'rgba(37, 99, 235, 0.75)';
+            line.style.transformOrigin = '0 50%';
+            line.style.transform = `rotate(${angle}deg)`;
+            view.appendChild(line);
+
+            const herePoint = document.createElement('div');
+            herePoint.className = 'history-point';
+            herePoint.style.left = `${oldestXPct}%`;
+            herePoint.style.top = `${oldestYPct}%`;
+
+            const hereLabel = document.createElement('div');
+            hereLabel.className = 'history-point-label';
+            hereLabel.textContent = 'here';
+            hereLabel.style.left = `${oldestXPct}%`;
+            hereLabel.style.top = `${oldestYPct}%`;
+
+            const therePoint = document.createElement('div');
+            therePoint.className = 'history-point latest';
+            therePoint.style.left = `${latestXPct}%`;
+            therePoint.style.top = `${latestYPct}%`;
+
+            const thereLabel = document.createElement('div');
+            thereLabel.className = 'history-point-label';
+            thereLabel.textContent = 'there';
+            thereLabel.style.left = `${latestXPct}%`;
+            thereLabel.style.top = `${latestYPct}%`;
+
+            view.appendChild(herePoint);
+            view.appendChild(hereLabel);
+            view.appendChild(therePoint);
+            view.appendChild(thereLabel);
+        }
+
         function randomMonLabel() {
-            const names = ['dat boi', 'sad pepe', 'dank orb', 'mlg rat', 'wild meme'];
-            return names[Math.floor(Math.random() * names.length)];
+            return bootlegMons[Math.floor(Math.random() * bootlegMons.length)];
         }
 
         function moveBootlegMon() {
@@ -1121,7 +1654,56 @@
             const maxY = Math.max(0, map.clientHeight - mon.offsetHeight - 6);
             mon.style.left = Math.floor(Math.random() * maxX) + 'px';
             mon.style.top = Math.floor(Math.random() * maxY) + 'px';
-            mon.textContent = randomMonLabel();
+
+            pokegoCurrentMonster = randomMonLabel();
+            document.getElementById('pokegoName').textContent = pokegoCurrentMonster.name;
+            document.getElementById('pokegoSprite').textContent = pokegoCurrentMonster.sprite;
+        }
+
+        function throwBootlegBall(event) {
+            const map = document.getElementById('pokegoMap');
+            const mon = document.getElementById('pokegoMon');
+            const ball = document.getElementById('pokeball');
+            if (!map || !mon || !ball) {
+                return;
+            }
+
+            const rect = map.getBoundingClientRect();
+            const startX = rect.width / 2;
+            const startY = rect.height - 22;
+            const targetX = Math.max(12, Math.min(rect.width - 12, event.clientX - rect.left));
+            const targetY = Math.max(12, Math.min(rect.height - 12, event.clientY - rect.top));
+
+            pokegoThrows += 1;
+            playTone(320, 0.08, 'triangle', 0.05);
+
+            ball.classList.remove('hidden');
+            ball.classList.remove('throwing');
+            ball.style.left = startX + 'px';
+            ball.style.top = startY + 'px';
+            ball.style.transform = 'translate(-50%, -50%) scale(1)';
+            void ball.offsetWidth;
+
+            ball.classList.add('throwing');
+            ball.style.left = targetX + 'px';
+            ball.style.top = targetY + 'px';
+            ball.style.transform = 'translate(-50%, -50%) scale(0.85) rotate(360deg)';
+
+            setTimeout(() => {
+                const monX = mon.offsetLeft + mon.offsetWidth / 2;
+                const monY = mon.offsetTop + mon.offsetHeight / 2;
+                const dist = Math.hypot(targetX - monX, targetY - monY);
+                const caught = dist < 70;
+
+                if (caught) {
+                    catchBootlegMon();
+                } else {
+                    document.getElementById('pokegoStats').textContent = `Catches: ${pokegoCatches} | Throws: ${pokegoThrows} | XP: ${pokegoCatches * 25}`;
+                }
+
+                ball.classList.add('hidden');
+                ball.classList.remove('throwing');
+            }, 470);
         }
 
         function startBootlegPokeGo() {
@@ -1134,6 +1716,9 @@
                     playTone(330 + Math.random() * 180, 0.22, 'triangle', 0.045);
                 }, 1300);
             }
+
+            const map = document.getElementById('pokegoMap');
+            map.addEventListener('click', throwBootlegBall);
         }
 
         function stopBootlegPokeGo() {
@@ -1145,11 +1730,14 @@
                 clearInterval(pokegoSpawnIntervalId);
                 pokegoSpawnIntervalId = 0;
             }
+
+            const map = document.getElementById('pokegoMap');
+            map.removeEventListener('click', throwBootlegBall);
         }
 
         function catchBootlegMon() {
             pokegoCatches += 1;
-            document.getElementById('pokegoStats').textContent = `Catches: ${pokegoCatches} | XP: ${pokegoCatches * 25}`;
+            document.getElementById('pokegoStats').textContent = `Catches: ${pokegoCatches} | Throws: ${pokegoThrows} | XP: ${pokegoCatches * 25}`;
             playTone(440, 0.18, 'triangle', 0.08);
             playTone(660, 0.14, 'triangle', 0.06, 0.05);
             moveBootlegMon();
@@ -1590,6 +2178,10 @@
             doMlgEffects();
             playDubstepHit();
 
+            if (count === 7) {
+                show67KidPopup();
+            }
+
             if (Math.random() < 0.4) {
                 addRandomGif();
             }
@@ -1782,7 +2374,24 @@
         }
 
         function updateDisplay() {
-            document.getElementById('count').textContent = count;
+            document.getElementById('count').textContent = count === 7 ? '67' : count;
+        }
+
+        function show67KidPopup() {
+            const mlgOverlay = document.getElementById('mlgOverlay');
+            const phrase = document.createElement('div');
+
+            phrase.className = 'mlg-text';
+            phrase.textContent = '67 KID';
+            phrase.style.left = Math.floor(Math.random() * Math.max(120, window.innerWidth - 260)) + 'px';
+            phrase.style.top = Math.floor(Math.random() * Math.max(80, window.innerHeight - 160)) + 'px';
+            phrase.style.color = '#00ff6a';
+            phrase.style.fontSize = '72px';
+
+            mlgOverlay.appendChild(phrase);
+            setTimeout(() => {
+                phrase.remove();
+            }, 800);
         }
 
         function recordLocation() {
@@ -1806,6 +2415,9 @@
                     }
 
                     renderLocationHistory();
+                    if (historyMapOpen) {
+                        startFakeMapLoad();
+                    }
                     status.textContent = `Saved location at ${timestamp}`;
                 },
                 (error) => {
@@ -1822,6 +2434,9 @@
         function clearLocationHistory() {
             locationHistory.length = 0;
             renderLocationHistory();
+            if (historyMapOpen) {
+                startFakeMapLoad();
+            }
             document.getElementById('locationStatus').textContent = 'Location history cleared.';
         }
 

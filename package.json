@@ -1,0 +1,12 @@
+{
+  "name": "stepplusplus-root",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix feetfinder",
+    "build": "npm run build --prefix feetfinder",
+    "start": "npm run start --prefix feetfinder"
+  },
+  "dependencies": {
+    "next": "16.2.1"
+  }
+}
